@@ -1,19 +1,9 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp\Formatter;
 
+use Repack\ScssPhp\Type;
 use Repack\ScssPhp\Formatter;
 use Repack\ScssPhp\Formatter\OutputBlock;
-use Repack\ScssPhp\Type;
 
 /**
  * Nested formatter
@@ -70,6 +60,9 @@ class Nested extends Formatter
         $this->write($inner . implode($glue, $block->lines));
     }
 
+    /**
+     * @param $block
+     */
     protected function hasFlatChild($block)
     {
         foreach ($block->children as $child) {
@@ -86,10 +79,25 @@ class Nested extends Formatter
      */
     protected function block(OutputBlock $block)
     {
+        /**
+         * @var mixed
+         */
         static $depths;
+        /**
+         * @var mixed
+         */
         static $downLevel;
+        /**
+         * @var mixed
+         */
         static $closeBlock;
+        /**
+         * @var mixed
+         */
         static $previousEmpty;
+        /**
+         * @var mixed
+         */
         static $previousHasSelector;
 
         if ($block->type === 'root') {

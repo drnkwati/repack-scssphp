@@ -1,14 +1,4 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp\SourceMap;
 
 use Repack\ScssPhp\Exception\CompilerException;
@@ -55,7 +45,7 @@ class SourceMapGenerator
         'sourceMapRootpath' => '',
 
         // base path for filename normalization
-        'sourceMapBasepath' => '',
+        'sourceMapBasepath' => ''
     );
 
     /**
@@ -85,6 +75,9 @@ class SourceMapGenerator
      * @var array
      */
     protected $sources = array();
+    /**
+     * @var array
+     */
     protected $sourceKeys = array();
 
     /**
@@ -92,6 +85,9 @@ class SourceMapGenerator
      */
     private $options;
 
+    /**
+     * @param array $options
+     */
     public function __construct(array $options = array())
     {
         $this->options = array_merge($this->defaultOptions, $options);
@@ -114,7 +110,7 @@ class SourceMapGenerator
             'generated_column' => $generatedColumn,
             'original_line' => $originalLine,
             'original_column' => $originalColumn,
-            'source_file' => $sourceFile,
+            'source_file' => $sourceFile
         );
 
         $this->sources[$sourceFile] = $sourceFile;

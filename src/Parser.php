@@ -1,22 +1,12 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp;
 
+use Repack\ScssPhp\Node;
+use Repack\ScssPhp\Type;
 use Repack\ScssPhp\Block;
 use Repack\ScssPhp\Cache;
 use Repack\ScssPhp\Compiler;
 use Repack\ScssPhp\Exception\ParserException;
-use Repack\ScssPhp\Node;
-use Repack\ScssPhp\Type;
 
 /**
  * Parser
@@ -47,28 +37,82 @@ class Parser
         '-' => 5,
         '*' => 6,
         '/' => 6,
-        '%' => 6,
+        '%' => 6
     );
 
+    /**
+     * @var mixed
+     */
     protected static $commentPattern;
+    /**
+     * @var mixed
+     */
     protected static $operatorPattern;
+    /**
+     * @var mixed
+     */
     protected static $whitePattern;
 
+    /**
+     * @var mixed
+     */
     protected $cache;
 
+    /**
+     * @var mixed
+     */
     private $sourceName;
+    /**
+     * @var mixed
+     */
     private $sourceIndex;
+    /**
+     * @var mixed
+     */
     private $sourcePositions;
+    /**
+     * @var mixed
+     */
     private $charset;
+    /**
+     * @var mixed
+     */
     private $count;
+    /**
+     * @var mixed
+     */
     private $env;
+    /**
+     * @var mixed
+     */
     private $inParens;
+    /**
+     * @var mixed
+     */
     private $eatWhiteDefault;
+    /**
+     * @var mixed
+     */
     private $discardComments;
+    /**
+     * @var mixed
+     */
     private $buffer;
+    /**
+     * @var mixed
+     */
     private $utf8;
+    /**
+     * @var mixed
+     */
     private $encoding;
+    /**
+     * @var mixed
+     */
     private $patternModifiers;
+    /**
+     * @var mixed
+     */
     private $commentsSeen;
 
     /**
@@ -100,8 +144,8 @@ class Parser
 
             static::$commentPattern = $commentMultiLeft . '.*?' . $commentMultiRight;
             static::$whitePattern = $this->utf8
-            ? '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisuS'
-            : '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisS';
+                ? '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisuS'
+                : '/' . $commentSingle . '[^\n]*\s*|(' . static::$commentPattern . ')\s*|\s+/AisS';
         }
 
         if ($cache) {
@@ -135,8 +179,8 @@ class Parser
         list($line, $column) = $this->getSourcePosition($this->count);
 
         $loc = empty($this->sourceName)
-        ? "line: $line, column: $column"
-        : "$this->sourceName on line $line, at column $column";
+            ? "line: $line, column: $column"
+            : "$this->sourceName on line $line, at column $column";
 
         if ($this->peek("(.*?)(\n|$)", $m, $this->count)) {
             throw new ParserException("$msg: failed at `$m[1]` $loc");
@@ -160,7 +204,7 @@ class Parser
             $cacheKey = $this->sourceName . ":" . md5($buffer);
             $parseOptions = array(
                 'charset' => $this->charset,
-                'utf8' => $this->utf8,
+                'utf8' => $this->utf8
             );
             $v = $this->cache->getCache("parse", $cacheKey, $parseOptions);
 
@@ -872,7 +916,6 @@ class Parser
      */
     protected function popBlock()
     {
-
         // collect comments ending just before of a block closing
         if ($this->env->comments) {
             $this->append(null);
@@ -962,7 +1005,7 @@ class Parser
         $m = array(
             $match . $token,
             $match,
-            $token,
+            $token
         );
         $this->count = $end + strlen($token);
 
@@ -1843,7 +1886,7 @@ class Parser
 
             if ($this->matchChar(')')) {
                 $out = array(Type::T_STRING, '', array(
-                    'progid:', $fn, '(', $args, ')',
+                    'progid:', $fn, '(', $args, ')'
                 ));
 
                 return true;
@@ -2766,8 +2809,8 @@ class Parser
     {
         if ($this->match(
             $this->utf8
-            ? '(([\pL\w\x{00A0}-\x{10FFFF}_\-\*!"\']|[\\\\].)([\pL\w\x{00A0}-\x{10FFFF}\-_"\']|[\\\\].)*)'
-            : '(([\w_\-\*!"\']|[\\\\].)([\w\-_"\']|[\\\\].)*)',
+                ? '(([\pL\w\x{00A0}-\x{10FFFF}_\-\*!"\']|[\\\\].)([\pL\w\x{00A0}-\x{10FFFF}\-_"\']|[\\\\].)*)'
+                : '(([\w_\-\*!"\']|[\\\\].)([\w\-_"\']|[\\\\].)*)',
             $m,
             $eatWhitespace
         )) {
@@ -2811,8 +2854,8 @@ class Parser
     {
         if ($this->match(
             $this->utf8
-            ? '([\pL\w\-_]+)'
-            : '([\w\-_]+)',
+                ? '([\pL\w\-_]+)'
+                : '([\w\-_]+)',
             $m
         )) {
             $placeholder = $m[1];

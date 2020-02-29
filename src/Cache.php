@@ -1,14 +1,4 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp;
 
 use Exception;
@@ -35,18 +25,33 @@ class Cache
     const CACHE_VERSION = 1;
 
     // directory used for storing data
+    /**
+     * @var mixed
+     */
     public static $cacheDir = false;
 
     // prefix for the storing data
+    /**
+     * @var string
+     */
     public static $prefix = 'scssphp_';
 
     // force a refresh : 'once' for refreshing the first hit on a cache only, true to never use the cache in this hit
+    /**
+     * @var mixed
+     */
     public static $forceRefresh = false;
 
     // specifies the number of seconds after which data cached will be seen as 'garbage' and potentially cleaned up
+    /**
+     * @var int
+     */
     public static $gcLifetime = 604800;
 
     // array of already refreshed cache if $forceRefresh==='once'
+    /**
+     * @var array
+     */
     protected static $refreshed = array();
 
     /**
@@ -155,7 +160,7 @@ class Cache
             'version' => self::CACHE_VERSION,
             'operation' => $operation,
             'what' => $what,
-            'options' => $options,
+            'options' => $options
         );
 
         $t = self::$prefix
@@ -192,6 +197,9 @@ class Cache
      */
     public static function cleanCache()
     {
+        /**
+         * @var mixed
+         */
         static $clean = false;
 
         if ($clean || empty(self::$cacheDir)) {

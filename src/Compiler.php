@@ -1,28 +1,18 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp;
 
-use Repack\ScssPhp\Base\Range;
+use Repack\ScssPhp\Node;
+use Repack\ScssPhp\Type;
+use Repack\ScssPhp\Util;
 use Repack\ScssPhp\Block;
 use Repack\ScssPhp\Cache;
 use Repack\ScssPhp\Colors;
-use Repack\ScssPhp\Compiler\Environment;
-use Repack\ScssPhp\Exception\CompilerException;
-use Repack\ScssPhp\Formatter\OutputBlock;
-use Repack\ScssPhp\Node;
 use Repack\ScssPhp\Parser;
+use Repack\ScssPhp\Base\Range;
+use Repack\ScssPhp\Compiler\Environment;
+use Repack\ScssPhp\Formatter\OutputBlock;
+use Repack\ScssPhp\Exception\CompilerException;
 use Repack\ScssPhp\SourceMap\SourceMapGenerator;
-use Repack\ScssPhp\Type;
-use Repack\ScssPhp\Util;
 
 /**
  * The scss compiler and parser.
@@ -87,7 +77,7 @@ class Compiler
 
         '<=' => 'lte',
         '>=' => 'gte',
-        '<=>' => 'cmp',
+        '<=>' => 'cmp'
     );
 
     /**
@@ -96,37 +86,100 @@ class Compiler
     protected static $namespaces = array(
         'special' => '%',
         'mixin' => '@',
-        'function' => '^',
+        'function' => '^'
     );
 
+    /**
+     * @var array
+     */
     public static $true = array(Type::T_KEYWORD, 'true');
+    /**
+     * @var array
+     */
     public static $false = array(Type::T_KEYWORD, 'false');
+    /**
+     * @var array
+     */
     public static $null = array(Type::T_NULL);
+    /**
+     * @var array
+     */
     public static $nullString = array(Type::T_STRING, '', array());
+    /**
+     * @var array
+     */
     public static $defaultValue = array(Type::T_KEYWORD, '');
+    /**
+     * @var array
+     */
     public static $selfSelector = array(Type::T_SELF);
+    /**
+     * @var array
+     */
     public static $emptyList = array(Type::T_LIST, '', array());
+    /**
+     * @var array
+     */
     public static $emptyMap = array(Type::T_MAP, array(), array());
+    /**
+     * @var array
+     */
     public static $emptyString = array(Type::T_STRING, '"', array());
+    /**
+     * @var array
+     */
     public static $with = array(Type::T_KEYWORD, 'with');
+    /**
+     * @var array
+     */
     public static $without = array(Type::T_KEYWORD, 'without');
 
+    /**
+     * @var array
+     */
     protected $importPaths = array('');
+    /**
+     * @var array
+     */
     protected $importCache = array();
+    /**
+     * @var array
+     */
     protected $importedFiles = array();
+    /**
+     * @var array
+     */
     protected $userFunctions = array();
+    /**
+     * @var array
+     */
     protected $registeredVars = array();
+    /**
+     * @var array
+     */
     protected $registeredFeatures = array(
         'extend-selector-pseudoclass' => false,
         'at-error' => true,
         'units-level-3' => false,
-        'global-variable-shadowing' => false,
+        'global-variable-shadowing' => false
     );
 
+    /**
+     * @var mixed
+     */
     protected $encoding = null;
+    /**
+     * @var mixed
+     */
     protected $lineNumberStyle = null;
 
+    /**
+     * @var mixed
+     */
     protected $sourceMap = self::SOURCE_MAP_NONE;
+    /**
+     * @var array
+     */
     protected $sourceMapOptions = array();
 
     /**
@@ -134,32 +187,89 @@ class Compiler
      */
     protected $formatter = 'Repack\ScssPhp\Formatter\Nested';
 
+    /**
+     * @var mixed
+     */
     protected $rootEnv;
+    /**
+     * @var mixed
+     */
     protected $rootBlock;
 
     /**
      * @var \Repack\ScssPhp\Compiler\Environment
      */
     protected $env;
+    /**
+     * @var mixed
+     */
     protected $scope;
+    /**
+     * @var mixed
+     */
     protected $storeEnv;
+    /**
+     * @var mixed
+     */
     protected $charsetSeen;
+    /**
+     * @var mixed
+     */
     protected $sourceNames;
 
+    /**
+     * @var mixed
+     */
     protected $cache;
 
+    /**
+     * @var mixed
+     */
     protected $indentLevel;
+    /**
+     * @var mixed
+     */
     protected $extends;
+    /**
+     * @var mixed
+     */
     protected $extendsMap;
+    /**
+     * @var mixed
+     */
     protected $parsedFiles;
+    /**
+     * @var mixed
+     */
     protected $parser;
+    /**
+     * @var mixed
+     */
     protected $sourceIndex;
+    /**
+     * @var mixed
+     */
     protected $sourceLine;
+    /**
+     * @var mixed
+     */
     protected $sourceColumn;
+    /**
+     * @var mixed
+     */
     protected $stderr;
+    /**
+     * @var mixed
+     */
     protected $shouldEvaluate;
+    /**
+     * @var mixed
+     */
     protected $ignoreErrors;
 
+    /**
+     * @var array
+     */
     protected $callStack = array();
 
     /**
@@ -175,6 +285,9 @@ class Compiler
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function getCompileOptions()
     {
         $options = array(
@@ -184,7 +297,7 @@ class Compiler
             'encoding' => $this->encoding,
             'sourceMap' => serialize($this->sourceMap),
             'sourceMapOptions' => $this->sourceMapOptions,
-            'formatter' => $this->formatter,
+            'formatter' => $this->formatter
         );
 
         return $options;
@@ -280,7 +393,7 @@ class Compiler
         if ($this->cache && isset($cacheKey) && isset($compileOptions)) {
             $v = array(
                 'dependencies' => $this->getParsedFiles(),
-                'out' => &$out,
+                'out' => &$out
             );
 
             $this->cache->setCache("compile", $cacheKey, $v, $compileOptions);
@@ -520,6 +633,9 @@ class Compiler
      */
     protected function matchExtends($selector, &$out, $from = 0, $initial = true)
     {
+        /**
+         * @var array
+         */
         static $partsPile = array();
 
         $selector = $this->glueFunctionSelectors($selector);
@@ -1207,7 +1323,6 @@ class Compiler
      */
     protected function testWithWithout($what, $with, $without)
     {
-
         // if without, reject only if in the list (or 'all' is in the list)
         if (count($without)) {
             return (isset($without[$what]) || isset($without['all'])) ? false : true;
@@ -1672,13 +1787,16 @@ class Compiler
         return false;
     }
 
+    /**
+     * @param $name
+     */
     protected function pushCallStack($name = '')
     {
         $this->callStack[] = array(
             'n' => $name,
             Parser::SOURCE_INDEX => $this->sourceIndex,
             Parser::SOURCE_LINE => $this->sourceLine,
-            Parser::SOURCE_COLUMN => $this->sourceColumn,
+            Parser::SOURCE_COLUMN => $this->sourceColumn
         );
 
         // infinite calling loop
@@ -1767,6 +1885,9 @@ class Compiler
      */
     protected function evaluateMediaQuery($queryList)
     {
+        /**
+         * @var mixed
+         */
         static $parser = null;
         $outQueryList = array();
         foreach ($queryList as $kql => $query) {
@@ -1963,7 +2084,6 @@ class Compiler
             $part2 = array_pop($selectors2);
 
             if (!$this->isImmediateRelationshipCombinator($part1[0]) && $part1 !== $part2) {
-
                 $isImmediateRel = $this->isImmediateRelationshipCombinator(reset($merged));
 
                 if ($isImmediateRel[0]) {
@@ -2027,7 +2147,7 @@ class Compiler
 
             return array(
                 $m1 === Type::T_NOT ? $m2 : $m1,
-                $m1 === Type::T_NOT ? $t2 : $t1,
+                $m1 === Type::T_NOT ? $t2 : $t1
             );
         }
 
@@ -2711,7 +2831,6 @@ class Compiler
      */
     protected function reduce($value, $inExp = false)
     {
-
         switch ($value[0]) {
             case Type::T_EXPRESSION:
                 list(, $op, $left, $right, $inParens) = $value;
@@ -3738,8 +3857,8 @@ class Compiler
         }
 
         $parentQueries = isset($env->block->queryList)
-        ? $env->block->queryList
-        : array(array(array(Type::T_MEDIA_VALUE, $env->block->value)));
+            ? $env->block->queryList
+            : array(array(array(Type::T_MEDIA_VALUE, $env->block->value)));
 
         $store = array($this->env, $this->storeEnv);
         $this->env = $env;
@@ -4334,8 +4453,8 @@ class Compiler
         $column = $this->sourceColumn;
 
         $loc = isset($this->sourceNames[$this->sourceIndex])
-        ? $this->sourceNames[$this->sourceIndex] . " on line $line, at column $column"
-        : "line: $line, column: $column";
+            ? $this->sourceNames[$this->sourceIndex] . " on line $line, at column $column"
+            : "line: $line, column: $column";
 
         if (func_num_args() > 1) {
             $msg = call_user_func_array('sprintf', func_get_args());
@@ -4370,8 +4489,8 @@ class Compiler
                 if ($all || (isset($call['n']) && $call['n'])) {
                     $msg = "#" . $ncall++ . " " . $call['n'] . " ";
                     $msg .= (isset($this->sourceNames[$call[Parser::SOURCE_INDEX]])
-                        ? $this->sourceNames[$call[Parser::SOURCE_INDEX]]
-                        : '(unknown file)');
+                            ? $this->sourceNames[$call[Parser::SOURCE_INDEX]]
+                            : '(unknown file)');
                     $msg .= " on line " . $call[Parser::SOURCE_LINE];
                     $callStackMsg[] = $msg;
 
@@ -4538,6 +4657,9 @@ class Compiler
      */
     protected function sortNativeFunctionArgs($prototypes, $args)
     {
+        /**
+         * @var mixed
+         */
         static $parser = null;
 
         if (!isset($prototypes)) {
@@ -4935,7 +5057,7 @@ class Compiler
                 $list[] = array(
                     Type::T_LIST,
                     '',
-                    array($key, $value),
+                    array($key, $value)
                 );
             }
 
@@ -4981,8 +5103,8 @@ class Compiler
                     $rgba = explode(',', Colors::$cssColors[$name]);
 
                     return isset($rgba[3])
-                    ? array(Type::T_COLOR, (int) $rgba[0], (int) $rgba[1], (int) $rgba[2], (int) $rgba[3])
-                    : array(Type::T_COLOR, (int) $rgba[0], (int) $rgba[1], (int) $rgba[2]);
+                        ? array(Type::T_COLOR, (int) $rgba[0], (int) $rgba[1], (int) $rgba[2], (int) $rgba[3])
+                        : array(Type::T_COLOR, (int) $rgba[0], (int) $rgba[1], (int) $rgba[2]);
                 }
 
                 return null;
@@ -5238,7 +5360,15 @@ class Compiler
 
     // Built in functions
 
+    /**
+     * @var array
+     */
     protected static $libCall = array('name', 'args...');
+    /**
+     * @param $args
+     * @param $kwargs
+     * @return mixed
+     */
     protected function libCall($args, $kwargs)
     {
         $name = $this->compileStringContent($this->coerceString($this->reduce(array_shift($args), true)));
@@ -5258,7 +5388,14 @@ class Compiler
         return $this->reduce(array(Type::T_FUNCTION_CALL, $name, $callArgs));
     }
 
+    /**
+     * @var array
+     */
     protected static $libIf = array('condition', 'if-true', 'if-false:');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libIf($args)
     {
         list($cond, $t, $f) = $args;
@@ -5270,7 +5407,13 @@ class Compiler
         return $this->reduce($t, true);
     }
 
+    /**
+     * @var array
+     */
     protected static $libIndex = array('list', 'value');
+    /**
+     * @param $args
+     */
     protected function libIndex($args)
     {
         list($list, $value) = $args;
@@ -5302,7 +5445,13 @@ class Compiler
         return false === $key ? static::$null : $key + 1;
     }
 
+    /**
+     * @var array
+     */
     protected static $libRgb = array('red', 'green', 'blue');
+    /**
+     * @param $args
+     */
     protected function libRgb($args)
     {
         list($r, $g, $b) = $args;
@@ -5310,9 +5459,16 @@ class Compiler
         return array(Type::T_COLOR, $r[1], $g[1], $b[1]);
     }
 
+    /**
+     * @var array
+     */
     protected static $libRgba = array(
         array('color', 'alpha:1'),
         array('red', 'green', 'blue', 'alpha:1'));
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libRgba($args)
     {
         if ($color = $this->coerceColor($args[0])) {
@@ -5329,6 +5485,11 @@ class Compiler
     }
 
     // helper function for adjust_color, change_color, and scale_color
+    /**
+     * @param $args
+     * @param $fn
+     * @return mixed
+     */
     protected function alterColor($args, $fn)
     {
         $color = $this->assertColor($args[0]);
@@ -5363,10 +5524,17 @@ class Compiler
         return $color;
     }
 
+    /**
+     * @var array
+     */
     protected static $libAdjustColor = array(
         'color', 'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null',
+        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null'
     );
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libAdjustColor($args)
     {
         return $this->alterColor($args, function ($base, $alter, $i) {
@@ -5374,10 +5542,17 @@ class Compiler
         });
     }
 
+    /**
+     * @var array
+     */
     protected static $libChangeColor = array(
         'color', 'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null',
+        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null'
     );
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libChangeColor($args)
     {
         return $this->alterColor($args, function ($base, $alter, $i) {
@@ -5385,10 +5560,17 @@ class Compiler
         });
     }
 
+    /**
+     * @var array
+     */
     protected static $libScaleColor = array(
         'color', 'red:null', 'green:null', 'blue:null',
-        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null',
+        'hue:null', 'saturation:null', 'lightness:null', 'alpha:null'
     );
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libScaleColor($args)
     {
         return $this->alterColor($args, function ($base, $scale, $i) {
@@ -5424,7 +5606,13 @@ class Compiler
         });
     }
 
+    /**
+     * @var array
+     */
     protected static $libIeHexStr = array('color');
+    /**
+     * @param $args
+     */
     protected function libIeHexStr($args)
     {
         $color = $this->coerceColor($args[0]);
@@ -5433,7 +5621,14 @@ class Compiler
         return sprintf('#%02X%02X%02X%02X', $color[4], $color[1], $color[2], $color[3]);
     }
 
+    /**
+     * @var array
+     */
     protected static $libRed = array('color');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libRed($args)
     {
         $color = $this->coerceColor($args[0]);
@@ -5441,7 +5636,14 @@ class Compiler
         return $color[1];
     }
 
+    /**
+     * @var array
+     */
     protected static $libGreen = array('color');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libGreen($args)
     {
         $color = $this->coerceColor($args[0]);
@@ -5449,7 +5651,14 @@ class Compiler
         return $color[2];
     }
 
+    /**
+     * @var array
+     */
     protected static $libBlue = array('color');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libBlue($args)
     {
         $color = $this->coerceColor($args[0]);
@@ -5457,7 +5666,13 @@ class Compiler
         return $color[3];
     }
 
+    /**
+     * @var array
+     */
     protected static $libAlpha = array('color');
+    /**
+     * @param $args
+     */
     protected function libAlpha($args)
     {
         if ($color = $this->coerceColor($args[0])) {
@@ -5468,7 +5683,14 @@ class Compiler
         return null;
     }
 
+    /**
+     * @var array
+     */
     protected static $libOpacity = array('color');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libOpacity($args)
     {
         $value = $args[0];
@@ -5481,7 +5703,14 @@ class Compiler
     }
 
     // mix two colors
+    /**
+     * @var array
+     */
     protected static $libMix = array('color-1', 'color-2', 'weight:0.5');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libMix($args)
     {
         list($first, $second, $weight) = $args;
@@ -5507,7 +5736,7 @@ class Compiler
         $new = array(Type::T_COLOR,
             $w1 * $first[1] + $w2 * $second[1],
             $w1 * $first[2] + $w2 * $second[2],
-            $w1 * $first[3] + $w2 * $second[3],
+            $w1 * $first[3] + $w2 * $second[3]
         );
 
         if ($firstAlpha != 1.0 || $secondAlpha != 1.0) {
@@ -5517,7 +5746,14 @@ class Compiler
         return $this->fixColor($new);
     }
 
+    /**
+     * @var array
+     */
     protected static $libHsl = array('hue', 'saturation', 'lightness');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libHsl($args)
     {
         list($h, $s, $l) = $args;
@@ -5525,7 +5761,14 @@ class Compiler
         return $this->toRGB($h[1], $s[1], $l[1]);
     }
 
+    /**
+     * @var array
+     */
     protected static $libHsla = array('hue', 'saturation', 'lightness', 'alpha');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libHsla($args)
     {
         list($h, $s, $l, $a) = $args;
@@ -5536,7 +5779,13 @@ class Compiler
         return $color;
     }
 
+    /**
+     * @var array
+     */
     protected static $libHue = array('color');
+    /**
+     * @param $args
+     */
     protected function libHue($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5545,7 +5794,13 @@ class Compiler
         return new Node\Number($hsl[1], 'deg');
     }
 
+    /**
+     * @var array
+     */
     protected static $libSaturation = array('color');
+    /**
+     * @param $args
+     */
     protected function libSaturation($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5554,7 +5809,13 @@ class Compiler
         return new Node\Number($hsl[2], '%');
     }
 
+    /**
+     * @var array
+     */
     protected static $libLightness = array('color');
+    /**
+     * @param $args
+     */
     protected function libLightness($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5563,6 +5824,12 @@ class Compiler
         return new Node\Number($hsl[3], '%');
     }
 
+    /**
+     * @param $color
+     * @param $idx
+     * @param $amount
+     * @return mixed
+     */
     protected function adjustHsl($color, $idx, $amount)
     {
         $hsl = $this->toHSL($color[1], $color[2], $color[3]);
@@ -5576,7 +5843,14 @@ class Compiler
         return $out;
     }
 
+    /**
+     * @var array
+     */
     protected static $libAdjustHue = array('color', 'degrees');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libAdjustHue($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5585,7 +5859,14 @@ class Compiler
         return $this->adjustHsl($color, 1, $degrees);
     }
 
+    /**
+     * @var array
+     */
     protected static $libLighten = array('color', 'amount');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libLighten($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5594,7 +5875,14 @@ class Compiler
         return $this->adjustHsl($color, 3, $amount);
     }
 
+    /**
+     * @var array
+     */
     protected static $libDarken = array('color', 'amount');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libDarken($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5603,7 +5891,14 @@ class Compiler
         return $this->adjustHsl($color, 3, -$amount);
     }
 
+    /**
+     * @var array
+     */
     protected static $libSaturate = array(array('color', 'amount'), array('number'));
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSaturate($args)
     {
         $value = $args[0];
@@ -5618,7 +5913,14 @@ class Compiler
         return $this->adjustHsl($color, 2, $amount);
     }
 
+    /**
+     * @var array
+     */
     protected static $libDesaturate = array('color', 'amount');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libDesaturate($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5627,7 +5929,14 @@ class Compiler
         return $this->adjustHsl($color, 2, -$amount);
     }
 
+    /**
+     * @var array
+     */
     protected static $libGrayscale = array('color');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libGrayscale($args)
     {
         $value = $args[0];
@@ -5639,13 +5948,27 @@ class Compiler
         return $this->adjustHsl($this->assertColor($value), 2, -100);
     }
 
+    /**
+     * @var array
+     */
     protected static $libComplement = array('color');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libComplement($args)
     {
         return $this->adjustHsl($this->assertColor($args[0]), 1, 180);
     }
 
+    /**
+     * @var array
+     */
     protected static $libInvert = array('color');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libInvert($args)
     {
         $value = $args[0];
@@ -5663,7 +5986,14 @@ class Compiler
     }
 
     // increases opacity by amount
+    /**
+     * @var array
+     */
     protected static $libOpacify = array('color', 'amount');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libOpacify($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5675,14 +6005,28 @@ class Compiler
         return $color;
     }
 
+    /**
+     * @var array
+     */
     protected static $libFadeIn = array('color', 'amount');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libFadeIn($args)
     {
         return $this->libOpacify($args);
     }
 
     // decreases opacity by amount
+    /**
+     * @var array
+     */
     protected static $libTransparentize = array('color', 'amount');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libTransparentize($args)
     {
         $color = $this->assertColor($args[0]);
@@ -5694,13 +6038,27 @@ class Compiler
         return $color;
     }
 
+    /**
+     * @var array
+     */
     protected static $libFadeOut = array('color', 'amount');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libFadeOut($args)
     {
         return $this->libTransparentize($args);
     }
 
+    /**
+     * @var array
+     */
     protected static $libUnquote = array('string');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libUnquote($args)
     {
         $str = $args[0];
@@ -5712,7 +6070,14 @@ class Compiler
         return $str;
     }
 
+    /**
+     * @var array
+     */
     protected static $libQuote = array('string');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libQuote($args)
     {
         $value = $args[0];
@@ -5724,13 +6089,25 @@ class Compiler
         return array(Type::T_STRING, '"', array($value));
     }
 
+    /**
+     * @var array
+     */
     protected static $libPercentage = array('value');
+    /**
+     * @param $args
+     */
     protected function libPercentage($args)
     {
         return new Node\Number($this->coercePercent($args[0]) * 100, '%');
     }
 
+    /**
+     * @var array
+     */
     protected static $libRound = array('value');
+    /**
+     * @param $args
+     */
     protected function libRound($args)
     {
         $num = $args[0];
@@ -5738,7 +6115,13 @@ class Compiler
         return new Node\Number(round($num[1]), $num[2]);
     }
 
+    /**
+     * @var array
+     */
     protected static $libFloor = array('value');
+    /**
+     * @param $args
+     */
     protected function libFloor($args)
     {
         $num = $args[0];
@@ -5746,7 +6129,13 @@ class Compiler
         return new Node\Number(floor($num[1]), $num[2]);
     }
 
+    /**
+     * @var array
+     */
     protected static $libCeil = array('value');
+    /**
+     * @param $args
+     */
     protected function libCeil($args)
     {
         $num = $args[0];
@@ -5754,7 +6143,13 @@ class Compiler
         return new Node\Number(ceil($num[1]), $num[2]);
     }
 
+    /**
+     * @var array
+     */
     protected static $libAbs = array('value');
+    /**
+     * @param $args
+     */
     protected function libAbs($args)
     {
         $num = $args[0];
@@ -5762,6 +6157,10 @@ class Compiler
         return new Node\Number(abs($num[1]), $num[2]);
     }
 
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libMin($args)
     {
         $numbers = $this->getNormalizedNumbers($args);
@@ -5776,6 +6175,10 @@ class Compiler
         return $args[$min[0]];
     }
 
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libMax($args)
     {
         $numbers = $this->getNormalizedNumbers($args);
@@ -5825,7 +6228,13 @@ class Compiler
         return $numbers;
     }
 
+    /**
+     * @var array
+     */
     protected static $libLength = array('list');
+    /**
+     * @param $args
+     */
     protected function libLength($args)
     {
         $list = $this->coerceList($args[0]);
@@ -5834,6 +6243,9 @@ class Compiler
     }
 
     //protected static $libListSeparator = ['list...'];
+    /**
+     * @param $args
+     */
     protected function libListSeparator($args)
     {
         if (count($args) > 1) {
@@ -5853,7 +6265,13 @@ class Compiler
         return 'space';
     }
 
+    /**
+     * @var array
+     */
     protected static $libNth = array('list', 'n');
+    /**
+     * @param $args
+     */
     protected function libNth($args)
     {
         $list = $this->coerceList($args[0]);
@@ -5868,7 +6286,14 @@ class Compiler
         return isset($list[2][$n]) ? $list[2][$n] : static::$defaultValue;
     }
 
+    /**
+     * @var array
+     */
     protected static $libSetNth = array('list', 'n', 'value');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSetNth($args)
     {
         $list = $this->coerceList($args[0]);
@@ -5891,7 +6316,14 @@ class Compiler
         return $list;
     }
 
+    /**
+     * @var array
+     */
     protected static $libMapGet = array('map', 'key');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libMapGet($args)
     {
         $map = $this->assertMap($args[0]);
@@ -5909,7 +6341,13 @@ class Compiler
         return static::$null;
     }
 
+    /**
+     * @var array
+     */
     protected static $libMapKeys = array('map');
+    /**
+     * @param $args
+     */
     protected function libMapKeys($args)
     {
         $map = $this->assertMap($args[0]);
@@ -5918,7 +6356,13 @@ class Compiler
         return array(Type::T_LIST, ',', $keys);
     }
 
+    /**
+     * @var array
+     */
     protected static $libMapValues = array('map');
+    /**
+     * @param $args
+     */
     protected function libMapValues($args)
     {
         $map = $this->assertMap($args[0]);
@@ -5927,7 +6371,14 @@ class Compiler
         return array(Type::T_LIST, ',', $values);
     }
 
+    /**
+     * @var array
+     */
     protected static $libMapRemove = array('map', 'key');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libMapRemove($args)
     {
         $map = $this->assertMap($args[0]);
@@ -5943,7 +6394,13 @@ class Compiler
         return $map;
     }
 
+    /**
+     * @var array
+     */
     protected static $libMapHasKey = array('map', 'key');
+    /**
+     * @param $args
+     */
     protected function libMapHasKey($args)
     {
         $map = $this->assertMap($args[0]);
@@ -5958,7 +6415,14 @@ class Compiler
         return false;
     }
 
+    /**
+     * @var array
+     */
     protected static $libMapMerge = array('map-1', 'map-2');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libMapMerge($args)
     {
         $map1 = $this->assertMap($args[0]);
@@ -5981,7 +6445,13 @@ class Compiler
         return $map1;
     }
 
+    /**
+     * @var array
+     */
     protected static $libKeywords = array('args');
+    /**
+     * @param $args
+     */
     protected function libKeywords($args)
     {
         $this->assertList($args[0]);
@@ -5997,6 +6467,11 @@ class Compiler
         return array(Type::T_MAP, $keys, $values);
     }
 
+    /**
+     * @param $list1
+     * @param $sep
+     * @return mixed
+     */
     protected function listSeparatorForJoin($list1, $sep)
     {
         if (!isset($sep)) {
@@ -6015,7 +6490,13 @@ class Compiler
         }
     }
 
+    /**
+     * @var array
+     */
     protected static $libJoin = array('list1', 'list2', 'separator:null');
+    /**
+     * @param $args
+     */
     protected function libJoin($args)
     {
         list($list1, $list2, $sep) = $args;
@@ -6027,7 +6508,13 @@ class Compiler
         return array(Type::T_LIST, $sep, array_merge($list1[2], $list2[2]));
     }
 
+    /**
+     * @var array
+     */
     protected static $libAppend = array('list', 'val', 'separator:null');
+    /**
+     * @param $args
+     */
     protected function libAppend($args)
     {
         list($list1, $value, $sep) = $args;
@@ -6038,6 +6525,9 @@ class Compiler
         return array(Type::T_LIST, $sep, array_merge($list1[2], array($value)));
     }
 
+    /**
+     * @param $args
+     */
     protected function libZip($args)
     {
         foreach ($args as $arg) {
@@ -6064,7 +6554,14 @@ class Compiler
         return array(Type::T_LIST, ',', $lists);
     }
 
+    /**
+     * @var array
+     */
     protected static $libTypeOf = array('value');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libTypeOf($args)
     {
         $value = $args[0];
@@ -6094,7 +6591,13 @@ class Compiler
         }
     }
 
+    /**
+     * @var array
+     */
     protected static $libUnit = array('number');
+    /**
+     * @param $args
+     */
     protected function libUnit($args)
     {
         $num = $args[0];
@@ -6106,7 +6609,14 @@ class Compiler
         return '';
     }
 
+    /**
+     * @var array
+     */
     protected static $libUnitless = array('number');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libUnitless($args)
     {
         $value = $args[0];
@@ -6114,7 +6624,14 @@ class Compiler
         return $value[0] === Type::T_NUMBER && $value->unitless();
     }
 
+    /**
+     * @var array
+     */
     protected static $libComparable = array('number-1', 'number-2');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libComparable($args)
     {
         list($number1, $number2) = $args;
@@ -6133,7 +6650,14 @@ class Compiler
         return $number1[2] === $number2[2] || $number1->unitless() || $number2->unitless();
     }
 
+    /**
+     * @var array
+     */
     protected static $libStrIndex = array('string', 'substring');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libStrIndex($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6147,7 +6671,14 @@ class Compiler
         return $result === false ? static::$null : new Node\Number($result + 1, '');
     }
 
+    /**
+     * @var array
+     */
     protected static $libStrInsert = array('string', 'insert', 'index');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libStrInsert($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6163,7 +6694,13 @@ class Compiler
         return $string;
     }
 
+    /**
+     * @var array
+     */
     protected static $libStrLength = array('string');
+    /**
+     * @param $args
+     */
     protected function libStrLength($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6172,7 +6709,14 @@ class Compiler
         return new Node\Number(strlen($stringContent), '');
     }
 
+    /**
+     * @var array
+     */
     protected static $libStrSlice = array('string', 'start-at', 'end-at:null');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libStrSlice($args)
     {
         if (isset($args[2]) && $args[2][1] == 0) {
@@ -6192,13 +6736,20 @@ class Compiler
         $length = $end < 0 ? $end + 1 : ($end > 0 ? $end - $start : $end);
 
         $string[2] = $length
-        ? array(substr($stringContent, $start, $length))
-        : array(substr($stringContent, $start));
+            ? array(substr($stringContent, $start, $length))
+            : array(substr($stringContent, $start));
 
         return $string;
     }
 
+    /**
+     * @var array
+     */
     protected static $libToLowerCase = array('string');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libToLowerCase($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6209,7 +6760,14 @@ class Compiler
         return $string;
     }
 
+    /**
+     * @var array
+     */
     protected static $libToUpperCase = array('string');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libToUpperCase($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6220,7 +6778,14 @@ class Compiler
         return $string;
     }
 
+    /**
+     * @var array
+     */
     protected static $libFeatureExists = array('feature');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libFeatureExists($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6231,7 +6796,14 @@ class Compiler
         );
     }
 
+    /**
+     * @var array
+     */
     protected static $libFunctionExists = array('name');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libFunctionExists($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6254,7 +6826,14 @@ class Compiler
         return $this->toBool(is_callable($f));
     }
 
+    /**
+     * @var array
+     */
     protected static $libGlobalVariableExists = array('name');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libGlobalVariableExists($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6263,7 +6842,14 @@ class Compiler
         return $this->has($name, $this->rootEnv);
     }
 
+    /**
+     * @var array
+     */
     protected static $libMixinExists = array('name');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libMixinExists($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6272,7 +6858,14 @@ class Compiler
         return $this->has(static::$namespaces['mixin'] . $name);
     }
 
+    /**
+     * @var array
+     */
     protected static $libVariableExists = array('name');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libVariableExists($args)
     {
         $string = $this->coerceString($args[0]);
@@ -6295,7 +6888,13 @@ class Compiler
         return array(Type::T_STRING, '', array('counter(' . implode(',', $list) . ')'));
     }
 
+    /**
+     * @var array
+     */
     protected static $libRandom = array('limit');
+    /**
+     * @param $args
+     */
     protected function libRandom($args)
     {
         if (isset($args[0])) {
@@ -6326,7 +6925,14 @@ class Compiler
         return array(Type::T_STRING, '', array('u' . str_pad(base_convert($id, 10, 36), 8, '0', STR_PAD_LEFT)));
     }
 
+    /**
+     * @var array
+     */
     protected static $libInspect = array('value');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libInspect($args)
     {
         if ($args[0] === static::$null) {
@@ -6345,6 +6951,9 @@ class Compiler
      */
     protected function getSelectorArg($arg)
     {
+        /**
+         * @var mixed
+         */
         static $parser = null;
 
         if (is_null($parser)) {
@@ -6380,7 +6989,14 @@ class Compiler
         return $selectors;
     }
 
+    /**
+     * @var array
+     */
     protected static $libIsSuperselector = array('super', 'sub');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libIsSuperselector($args)
     {
         list($super, $sub) = $args;
@@ -6481,7 +7097,14 @@ class Compiler
         return true;
     }
 
+    /**
+     * @var array
+     */
     protected static $libSelectorAppend = array('selector...');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSelectorAppend($args)
     {
         // get the selector... list
@@ -6547,7 +7170,14 @@ class Compiler
         return $lastSelectors;
     }
 
+    /**
+     * @var array
+     */
     protected static $libSelectorExtend = array('selectors', 'extendee', 'extender');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSelectorExtend($args)
     {
         list($selectors, $extendee, $extender) = $args;
@@ -6565,7 +7195,14 @@ class Compiler
         return $this->formatOutputSelector($extended);
     }
 
+    /**
+     * @var array
+     */
     protected static $libSelectorReplace = array('selectors', 'original', 'replacement');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSelectorReplace($args)
     {
         list($selectors, $original, $replacement) = $args;
@@ -6630,7 +7267,14 @@ class Compiler
         return $extended;
     }
 
+    /**
+     * @var array
+     */
     protected static $libSelectorNest = array('selector...');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSelectorNest($args)
     {
         // get the selector... list
@@ -6657,7 +7301,14 @@ class Compiler
         return $this->formatOutputSelector($outputSelectors);
     }
 
+    /**
+     * @var array
+     */
     protected static $libSelectorParse = array('selectors');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSelectorParse($args)
     {
         $selectors = reset($args);
@@ -6666,7 +7317,14 @@ class Compiler
         return $this->formatOutputSelector($selectors);
     }
 
+    /**
+     * @var array
+     */
     protected static $libSelectorUnify = array('selectors1', 'selectors2');
+    /**
+     * @param $args
+     * @return mixed
+     */
     protected function libSelectorUnify($args)
     {
         list($selectors1, $selectors2) = $args;
@@ -6941,7 +7599,13 @@ class Compiler
         return '';
     }
 
+    /**
+     * @var array
+     */
     protected static $libSimpleSelectors = array('selector');
+    /**
+     * @param $args
+     */
     protected function libSimpleSelectors($args)
     {
         $selector = reset($args);

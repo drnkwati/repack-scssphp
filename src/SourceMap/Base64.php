@@ -1,14 +1,4 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp\SourceMap;
 
 /**
@@ -85,7 +75,7 @@ class Base64
         60 => '8',
         61 => '9',
         62 => '+',
-        63 => '/',
+        63 => '/'
     );
 
     /**
@@ -155,7 +145,7 @@ class Base64
         8 => 60,
         9 => 61,
         '+' => 62,
-        '/' => 63,
+        '/' => 63
     );
 
     /**

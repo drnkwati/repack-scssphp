@@ -1,19 +1,9 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp\Node;
 
-use Repack\ScssPhp\Compiler;
 use Repack\ScssPhp\Node;
 use Repack\ScssPhp\Type;
+use Repack\ScssPhp\Compiler;
 
 /**
  * Dimension + optional units
@@ -46,27 +36,27 @@ class Number extends Node implements \ArrayAccess
             'px' => 96,
             'cm' => 2.54,
             'mm' => 25.4,
-            'q' => 101.6,
+            'q' => 101.6
         ),
         'turn' => array(
             'deg' => 360,
             'grad' => 400,
             'rad' => 6.28318530717958647692528676, // 2 * M_PI
-            'turn' => 1,
+            'turn' => 1
         ),
         's' => array(
             's' => 1,
-            'ms' => 1000,
+            'ms' => 1000
         ),
         'Hz' => array(
             'Hz' => 1,
-            'kHz' => 0.001,
+            'kHz' => 0.001
         ),
         'dpi' => array(
             'dpi' => 1,
             'dpcm' => 2.54,
-            'dppx' => 96,
-        ),
+            'dppx' => 96
+        )
     );
 
     /**
@@ -90,9 +80,9 @@ class Number extends Node implements \ArrayAccess
         $this->type = Type::T_NUMBER;
         $this->dimension = $dimension;
         $this->units = is_array($initialUnit)
-        ? $initialUnit
-        : ($initialUnit ? array($initialUnit => 1)
-            : array());
+            ? $initialUnit
+            : ($initialUnit ? array($initialUnit => 1)
+                : array());
     }
 
     /**

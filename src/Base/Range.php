@@ -1,14 +1,4 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2015-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp\Base;
 
 /**
@@ -18,7 +8,13 @@ namespace Repack\ScssPhp\Base;
  */
 class Range
 {
+    /**
+     * @var mixed
+     */
     public $first;
+    /**
+     * @var mixed
+     */
     public $last;
 
     /**

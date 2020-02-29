@@ -1,14 +1,4 @@
 <?php
-/**
- * SCSSPHP
- *
- * @copyright 2012-2019 Leaf Corcoran
- *
- * @license http://opensource.org/licenses/MIT MIT
- *
- * @link http://scssphp.github.io/scssphp
- */
-
 namespace Repack\ScssPhp;
 
 /**
@@ -174,6 +164,6 @@ class Colors
         'white' => '255,255,255',
         'whitesmoke' => '245,245,245',
         'yellow' => '255,255,0',
-        'yellowgreen' => '154,205,50',
+        'yellowgreen' => '154,205,50'
     );
 }
