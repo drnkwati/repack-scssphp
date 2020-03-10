@@ -47,7 +47,6 @@
         "twbs/bootstrap": "~4.3",
         "zurb/foundation": "~6.5"
     },
-    "bin": ["bin/pscss"],
     "archive":
     {
         "exclude": [
